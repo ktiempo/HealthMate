@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthMate | Login Portal</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f7f8fa;
+      color: #333;
+    }
+
+    header {
+      background: #0088a9;
+      color: white;
+      padding: 15px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    nav a:hover, nav a.active {
+      text-decoration: underline;
+    }
+
+    .hero {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 20px;
+      min-height: 80vh;
+      background: url('Images/bg1.jpg') no-repeat center center/cover;
+      color: white;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.55);
+    }
+
+    .hero h1,
+    .hero p {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      max-width: 600px;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+
+    .roles {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 60px 20px;
+    }
+
+    .role-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+      padding: 30px 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .role-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .role-card i {
+      font-size: 3.5rem;
+      color: #0088a9;
+      margin-bottom: 15px;
+    }
+
+    .role-card h3 {
+      margin-bottom: 10px;
+      color: #004b63;
+      font-size: 1.4rem;
+    }
+
+    .role-card p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 20px 0;
+      background: #0088a9;
+      color: white;
+      border-radius: 0 0 15px 15px;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.2s;
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+    }
+
+    .btn:hover {
+      background: #006f88;
+      transform: scale(1.03);
+    }
+
+    footer {
+      background: #004b63;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 50px;
+    }
+
+    @media(max-width: 768px) {
+      .roles {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .btn {
+        padding: 18px 0;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header>
+    <h2 class="logo">HealthMate</h2>
+    <nav>
+      <ul>
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Welcome to HealthMate</h1>
+    <p>Your all-in-one doctor appointment and healthcare management system.</p>
+  </section>
+
+  <!-- Roles Section -->
+  <section class="roles">
+    <div class="role-card">
+      <i class="bi bi-person-badge"></i>
+      <h3>Admin</h3>
+      <p>Manage doctors, patients, and system records from a single dashboard.</p>
+      <a href="login.html" class="btn">Go to Admin</a>
+    </div>
+
+    <div class="role-card">
+      <i class="bi bi-person-heart"></i>
+      <h3>Doctor</h3>
+      <p>View appointments, manage patient records, and update availability.</p>
+      <a href="login.html" class="btn">Go to Doctor</a>
+    </div>
+
+    <div class="role-card">
+      <i class="bi bi-person"></i>
+      <h3>Patient</h3>
+      <p>Book appointments, view your records, and get connected with your doctor.</p>
+      <a href="login.html" class="btn">Go to Patient</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 HealthMate. All rights reserved.</p>
+  </footer>
+</body>
+</html>
