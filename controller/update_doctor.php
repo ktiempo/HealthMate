@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
     // ✅ Clear old schedules
     $conn->query("DELETE FROM doctor_slots WHERE doctor_id = $doctor_id");
 
-    // ✅ Insert new slots
+    // ✅ Insert updated schedules
     if (!empty($_POST['day'])) {
         $ins = $conn->prepare("INSERT INTO doctor_slots (doctor_id, day_of_week, start_time, end_time, total_slots) VALUES (?, ?, ?, ?, ?)");
         foreach ($_POST['day'] as $i => $day) {
@@ -40,42 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update'])) {
 
     $conn->close();
 
-    // ✅ Proper overlay popup, not replacing background
-    echo "
-    <!DOCTYPE html>
-    <html lang='en'>
-    <head>
-      <meta charset='UTF-8'>
-      <title>Doctor Updated</title>
-      <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-      <style>
-        html, body {
-          margin: 0;
-          height: 100%;
-          background-color: transparent;
-        }
-      </style>
-    </head>
-    <body>
-      <script>
-        Swal.fire({
-          title: '✅ Doctor Updated!',
-          text: 'The doctor information and schedule have been saved successfully.',
-          icon: 'success',
-          confirmButtonText: 'Return to Manage Doctors',
-          confirmButtonColor: '#0088a9',
-          background: '#ffffff',
-          color: '#004b63',
-          backdrop: 'rgba(0,0,0,0.4)',
-          customClass: {
-            popup: 'rounded-4 shadow-lg'
-          }
-        }).then(() => {
-          window.location.href = '../view/admin/manage_doctors.php';
-        });
-      </script>
-    </body>
-    </html>";
+    // ✅ Store session flag for SweetAlert
+    $_SESSION['update_success'] = true;
+    header("Location: ../view/admin/edit_doctor.php?id=$doctor_id");
     exit;
 } else {
     header('Location: ../view/admin/manage_doctors.php');

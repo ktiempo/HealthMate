@@ -38,35 +38,35 @@ $schedules = $conn->query("SELECT * FROM doctor_slots WHERE doctor_id = $doctor_
           <div class="row mb-3">
             <label class="col-sm-3 col-form-label">Full Name</label>
             <div class="col-sm-9">
-              <input type="text" name="name" class="form-control" value="<?php echo $doctor['name']; ?>" required>
+              <input type="text" name="name" class="form-control" value="<?php echo htmlspecialchars($doctor['name']); ?>" required>
             </div>
           </div>
 
           <div class="row mb-3">
             <label class="col-sm-3 col-form-label">Email</label>
             <div class="col-sm-9">
-              <input type="email" name="email" class="form-control" value="<?php echo $doctor['email']; ?>" required>
+              <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($doctor['email']); ?>" required>
             </div>
           </div>
 
           <div class="row mb-3">
             <label class="col-sm-3 col-form-label">Specialization</label>
             <div class="col-sm-9">
-              <input type="text" name="specialization" class="form-control" value="<?php echo $doctor['specialization']; ?>" required>
+              <input type="text" name="specialization" class="form-control" value="<?php echo htmlspecialchars($doctor['specialization']); ?>" required>
             </div>
           </div>
 
           <div class="row mb-3">
             <label class="col-sm-3 col-form-label">Credentials</label>
             <div class="col-sm-9">
-              <input type="text" name="credentials" class="form-control" value="<?php echo $doctor['credentials']; ?>" required>
+              <input type="text" name="credentials" class="form-control" value="<?php echo htmlspecialchars($doctor['credentials']); ?>" required>
             </div>
           </div>
 
           <div class="row mb-3">
             <label class="col-sm-3 col-form-label">Password</label>
             <div class="col-sm-9">
-              <input type="text" name="password" class="form-control" value="<?php echo $doctor['password']; ?>" required>
+              <input type="text" name="password" class="form-control" value="<?php echo htmlspecialchars($doctor['password']); ?>" required>
             </div>
           </div>
 
@@ -170,7 +170,7 @@ document.getElementById('add-slot').addEventListener('click', function() {
   container.appendChild(slot);
 });
 
-// Remove slot
+// Remove schedule slot
 document.addEventListener('click', function(e) {
   if (e.target.closest('.remove-slot')) {
     e.target.closest('.schedule-item').remove();
@@ -178,8 +178,29 @@ document.addEventListener('click', function(e) {
 });
 </script>
 
-<style>
-.schedule-item select, .schedule-item input { font-size: 0.9rem; }
-.btn-outline-success { border-color: #0088a9; color: #0088a9; }
-.btn-outline-success:hover { background-color: #0088a9; color: white; }
-</style>
+<!-- ✅ SweetAlert Success Modal Trigger -->
+<?php if (isset($_SESSION['update_success']) && $_SESSION['update_success'] === true): ?>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      Swal.fire({
+        title: '✅ Doctor Updated!',
+        text: 'Doctor information and schedule successfully updated.',
+        icon: 'success',
+        background: '#ffffff',
+        color: '#004b63',
+        confirmButtonText: 'Return to Manage Doctors',
+        confirmButtonColor: '#0088a9',
+        backdrop: `
+          rgba(0,0,0,0.4)
+          left top
+          no-repeat
+        `,
+        customClass: { popup: 'rounded-4 shadow-lg' }
+      }).then(() => {
+        window.location.href = 'manage_doctors.php';
+      });
+    });
+  </script>
+  <?php unset($_SESSION['update_success']); ?>
+<?php endif; ?>

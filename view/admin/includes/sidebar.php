@@ -32,7 +32,7 @@
 
     <!-- Patients -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="manage_patients.php">
+      <a class="nav-link collapsed" href="patients.php">
         <i class="bi bi-people"></i>
         <span>Patients</span>
       </a>
