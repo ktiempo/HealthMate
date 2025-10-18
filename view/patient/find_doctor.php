@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Find a Doctor | HealthMate</title>
 
-  <!-- Fonts & Vendor -->
+  <!-- Google Fonts & Vendor -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Outfit:wght@500;600&display=swap" rel="stylesheet">
   <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -27,7 +27,7 @@
       overflow-x: hidden;
     }
 
-    /* Hero */
+    /* Hero Section */
     .hero {
       background: linear-gradient(rgba(0, 75, 99, 0.85), rgba(0, 75, 99, 0.85)),
                   url('../../Images/pa1.jpg') center/cover no-repeat;
@@ -56,7 +56,7 @@
       opacity: 0.95;
     }
 
-    /* Doctor Cards */
+    /* Doctor Container */
     .container-section {
       margin-top: -80px;
       background: #fff;
@@ -78,30 +78,66 @@
     .doctor-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 25px rgba(0,136,169,0.18);
-      border-left-color: var(--dark);
     }
 
-    .doctor-header { display: flex; align-items: center; gap: 20px; }
-    .doctor-avatar { width: 70px; height: 70px; border-radius: 50%; background: #e0f6fb;
-      display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--main); }
+    .doctor-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .doctor-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #e0f6fb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--main);
+    }
 
     .btn-appointment {
-      background: var(--main); color: #fff; border-radius: 25px; border: none; padding: 8px 20px; transition: 0.3s;
+      background: var(--main);
+      color: #fff;
+      border-radius: 25px;
+      border: none;
+      padding: 8px 20px;
+      transition: 0.3s;
     }
 
-    .btn-appointment:hover { background: var(--dark); transform: scale(1.05); }
+    .btn-appointment:hover {
+      background: var(--dark);
+      transform: scale(1.05);
+    }
 
-    footer { background: var(--dark); color: #fff; text-align: center; padding: 18px 0; margin-top: 50px; }
+    footer {
+      background: var(--dark);
+      color: #fff;
+      text-align: center;
+      padding: 18px 0;
+      margin-top: 50px;
+    }
 
-    /* Slots */
+    /* Slot Styles */
     #slotContainer .slot-btn {
-      background: #f0fafd; border: 1px solid #0088a9; border-radius: 10px; padding: 10px;
-      color: #004b63; transition: 0.3s; text-align: center; cursor: pointer;
+      background: #f0fafd;
+      border: 1px solid #0088a9;
+      border-radius: 10px;
+      padding: 10px;
+      color: #004b63;
+      transition: 0.3s;
+      text-align: center;
+      cursor: pointer;
       flex: 1 1 calc(50% - 10px);
     }
 
-    #slotContainer .slot-btn:hover, .slot-btn.selected {
-      background: #0088a9; color: white; font-weight: 600;
+    #slotContainer .slot-btn:hover,
+    .slot-btn.selected {
+      background: #0088a9;
+      color: white;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -118,23 +154,26 @@
       <h4 class="fw-bold text-dark">Available Doctors</h4>
     </div>
 
-    <div class="search-bar d-flex align-items-center mx-auto mb-4" style="max-width:600px; background:#fff; border-radius:30px; box-shadow:0 4px 10px rgba(0,0,0,0.08); padding:10px 20px;">
+    <div class="search-bar d-flex align-items-center mx-auto mb-4"
+         style="max-width:600px;background:#fff;border-radius:30px;box-shadow:0 4px 10px rgba(0,0,0,0.08);padding:10px 20px;">
       <i class="bi bi-search me-2" style="color:#0088a9;"></i>
-      <input type="text" id="searchDoctor" class="form-control border-0" placeholder="Search doctor name or specialization..." onkeyup="searchDoctor()">
+      <input type="text" id="searchDoctor" class="form-control border-0"
+             placeholder="Search doctor name or specialization..." onkeyup="searchDoctor()">
     </div>
 
     <div id="doctorList">
       <?php
       $sql = "SELECT d.*, 
-              GROUP_CONCAT(CONCAT(ds.day_of_week, ' ', 
-              TIME_FORMAT(ds.start_time, '%h:%i %p'), ' - ', 
-              TIME_FORMAT(ds.end_time, '%h:%i %p')) 
-              ORDER BY FIELD(ds.day_of_week,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday') SEPARATOR ',') AS full_schedule
+              GROUP_CONCAT(CONCAT(ds.day_of_week, ' ',
+              TIME_FORMAT(ds.start_time, '%h:%i %p'), ' - ',
+              TIME_FORMAT(ds.end_time, '%h:%i %p'))
+              ORDER BY FIELD(ds.day_of_week,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')
+              SEPARATOR ',') AS full_schedule
               FROM doctors d
               LEFT JOIN doctor_slots ds ON d.doctor_id = ds.doctor_id
               GROUP BY d.doctor_id ORDER BY d.name";
-      $result = $conn->query($sql);
 
+      $result = $conn->query($sql);
       if ($result->num_rows > 0) {
         while ($r = $result->fetch_assoc()) {
           $clinic = $r['clinic_address'] ?? 'No clinic address';
@@ -155,12 +194,15 @@
             foreach ($schedules as $s) echo "<li>$s</li>";
           echo "</ul>
             <div class='text-end mt-3'>
-              <button class='btn btn-appointment' onclick=\"openBookingModal('{$r['doctor_id']}', '{$r['name']}', '{$r['specialization']}')\">
+              <button class='btn btn-appointment'
+                      onclick=\"openBookingModal('{$r['doctor_id']}', '{$r['name']}', '{$r['specialization']}')\">
                 <i class='bi bi-calendar-check'></i> Book Appointment
               </button>
             </div>
           </div>";
         }
+      } else {
+        echo "<p class='text-center text-muted'>No doctors found.</p>";
       }
       ?>
     </div>
@@ -181,10 +223,11 @@
             <div class="mb-3"><label>Specialization</label><input type="text" id="specialization" class="form-control" readonly></div>
             <div class="mb-3"><label>Mobile Number</label><input type="text" id="mobile_number" class="form-control" required></div>
 
-            <div class="mb-3"><label>Date</label>
+            <div class="mb-3">
+              <label>Date</label>
               <div class="input-group">
                 <span class="input-group-text" id="calendarIcon"><i class="bi bi-calendar-event"></i></span>
-                <input type="text" id="appointment_date" class="form-control" placeholder="Select date" required>
+                <input type="text" id="appointment_date" class="form-control" placeholder="Select date" required readonly>
               </div>
             </div>
 
@@ -201,8 +244,10 @@
               <textarea id="reason" class="form-control" rows="3" required></textarea>
             </div>
 
-            <div class="text-end"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="submit" class="btn btn-primary" style="background:#0088a9;border:none;">Book Now</button></div>
+            <div class="text-end">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary" style="background:#0088a9;border:none;">Book Now</button>
+            </div>
           </form>
         </div>
       </div>
@@ -213,8 +258,23 @@
 
   <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
   <script>
 let allSlots = [], unavailable = [], enabledDays = [], calendar;
+
+// ✅ FIXED: initialize Flatpickr only after modal fully opens
+document.getElementById("bookingModal").addEventListener("shown.bs.modal", function() {
+  if (calendar) { calendar.destroy(); } // reset flatpickr each open
+  calendar = flatpickr("#appointment_date", {
+    altInput: true,
+    altFormat: "F j, Y",
+    dateFormat: "Y-m-d",
+    minDate: "today",
+    disableMobile: true
+  });
+
+  document.getElementById("calendarIcon").addEventListener("click", () => calendar.open());
+});
 
 function searchDoctor() {
   const input = document.getElementById("searchDoctor").value.toLowerCase();
@@ -236,21 +296,16 @@ function openBookingModal(id, name, spec) {
       allSlots = data.slots;
       unavailable = data.unavailable_dates;
 
-      // enabled weekdays only
       const workingDays = [...new Set(allSlots.map(s => s.day_of_week))];
       const dayMap = { Sunday:0, Monday:1, Tuesday:2, Wednesday:3, Thursday:4, Friday:5, Saturday:6 };
-      enabledDays = workingDays.map(d => dayMap[d]);
+      const enabledDays = workingDays.map(d => dayMap[d]);
 
-      calendar = flatpickr("#appointment_date", {
-        altInput: true,
-        altFormat: "F j, Y",
-        dateFormat: "Y-m-d",
-        minDate: "today",
-        enable: [date => enabledDays.includes(date.getDay()) && !unavailable.includes(date.toISOString().split('T')[0])],
-        disable: [date => !enabledDays.includes(date.getDay())],
-        disableMobile: true
-      });
-      document.getElementById("calendarIcon").onclick = () => calendar.open();
+      if (calendar) {
+        calendar.set({
+          enable: [date => enabledDays.includes(date.getDay()) && !unavailable.includes(date.toISOString().split('T')[0])]
+        });
+      }
+
       slotContainer.innerHTML = "<div class='text-muted small'>Select a date to view available slots.</div>";
     });
 
