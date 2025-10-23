@@ -29,7 +29,7 @@ $doctor_id = $_SESSION['doctor_id'];
     <div class="card border-0 shadow-sm">
       <div class="card-body">
 
-        <!-- Weekly Schedule -->
+        <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
           <h5 class="card-title mb-0">Weekly Schedule</h5>
           <button class="btn btn-primary btn-sm" style="background-color:#0088a9;border:none;"
@@ -38,6 +38,7 @@ $doctor_id = $_SESSION['doctor_id'];
           </button>
         </div>
 
+        <!-- Weekly Schedule Table -->
         <div class="table-responsive">
           <table class="table table-striped align-middle text-center">
             <thead class="table-dark">
@@ -65,11 +66,7 @@ $doctor_id = $_SESSION['doctor_id'];
                   $slot_id = $row['slot_id'];
                   $time = date("h:i A", strtotime($row['start_time'])) . " - " . date("h:i A", strtotime($row['end_time']));
 
-                  $countQuery = $conn->prepare("
-                    SELECT COUNT(*) AS booked FROM appointments 
-                    WHERE doctor_id=? AND appointment_time=? 
-                    AND status IN ('Pending','Confirmed')
-                  ");
+                  $countQuery = $conn->prepare("SELECT COUNT(*) AS booked FROM appointments WHERE doctor_id=? AND appointment_time=? AND status IN ('Pending','Confirmed')");
                   $countQuery->bind_param("is", $doctor_id, $time);
                   $countQuery->execute();
                   $booked = $countQuery->get_result()->fetch_assoc()['booked'] ?? 0;
@@ -129,7 +126,7 @@ $doctor_id = $_SESSION['doctor_id'];
                               <input type='number' name='total_slots' value='{$row['total_slots']}' class='form-control' required>
                             </div>
                             <div class='text-center'>
-                              <button type='submit' class='btn btn-primary' style='background-color:#0088a9;border:none;'>Save Changes</button>
+                              <button type='submit' class='btn btn-primary' style='background-color:#0088a9;border:none;'>Save</button>
                               <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Cancel</button>
                             </div>
                           </form>
@@ -147,7 +144,7 @@ $doctor_id = $_SESSION['doctor_id'];
           </table>
         </div>
 
-        <!-- 💙 Clinic Unavailability -->
+        <!-- Clinic Unavailability -->
         <div class="mt-5 p-4 rounded-4 shadow-sm" style="background:#f8fcfd;border:1px solid #d3ebf0;">
           <div class="d-flex align-items-center mb-3">
             <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:40px;height:40px;background:#0088a933;">
@@ -155,7 +152,7 @@ $doctor_id = $_SESSION['doctor_id'];
             </div>
             <div>
               <h5 class="mb-0 fw-semibold text-primary">Clinic Unavailability</h5>
-              <small class="text-muted">Select one or multiple days (or a range) to mark your clinic as closed.</small>
+              <small class="text-muted">Select one or more days to mark your clinic as closed.</small>
             </div>
           </div>
 
@@ -179,7 +176,7 @@ $doctor_id = $_SESSION['doctor_id'];
               $unavailable_dates = [];
               if ($dates->num_rows > 0) {
                 while ($d = $dates->fetch_assoc()) {
-                  $dateVal = $d['unavailable_date'];
+                  $dateVal = date("Y-m-d", strtotime($d['unavailable_date']));
                   $unavailable_dates[] = $dateVal;
                   $date = date("F j, Y", strtotime($dateVal));
                   echo "
@@ -214,15 +211,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const disabledDates = <?= json_encode($unavailable_dates); ?>;
   let pickedDates = [];
 
-  // 🗓️ Flatpickr (multi or range)
-  const picker = flatpickr("#unavailable_date", {
-    mode: "multiple", // allow selecting multiple or range of dates
+  flatpickr("#unavailable_date", {
+    mode: "multiple",
     altInput: true,
     altFormat: "F j, Y",
     dateFormat: "Y-m-d",
     minDate: "today",
     disable: disabledDates,
     disableMobile: true,
+    appendTo: document.body,
     onChange: (selectedDates, dateStr) => pickedDates = dateStr.split(", ")
   });
 
@@ -242,7 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Mark unavailable (multi-date support)
+  // Mark unavailable
   document.getElementById('markUnavailableBtn').addEventListener('click', ()=>{
     if (pickedDates.length === 0)
       return Swal.fire('Error','Please select at least one date.','error');
@@ -285,15 +282,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <style>
 .table-dark{background-color:#004b63!important}
-.list-group-item{transition:all .2s ease}
-.list-group-item:hover{background:#f1faff}
-.btn-outline-danger:hover{background:#dc3545;color:white}
 .flatpickr-calendar{z-index:2000!important}
 .flatpickr-day.disabled,
-.flatpickr-day.disabled:hover{
-  background:#f3f3f3!important;
-  color:#bbb!important;
-  cursor:not-allowed!important;
-}
+.flatpickr-day.disabled:hover{background:#f3f3f3!important;color:#bbb!important;cursor:not-allowed!important;}
 .flatpickr-input[readonly]{background-color:white!important;cursor:pointer;}
 </style>

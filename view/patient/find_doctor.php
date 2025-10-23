@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Find a Doctor | HealthMate</title>
 
-  <!-- Google Fonts & Vendor -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Outfit:wght@500;600&display=swap" rel="stylesheet">
   <link href="../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -27,7 +26,6 @@
       overflow-x: hidden;
     }
 
-    /* Hero Section */
     .hero {
       background: linear-gradient(rgba(0, 75, 99, 0.85), rgba(0, 75, 99, 0.85)),
                   url('../../Images/pa1.jpg') center/cover no-repeat;
@@ -49,14 +47,6 @@
       text-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
     }
 
-    .hero p {
-      font-size: 1.1rem;
-      max-width: 650px;
-      color: #e8f7fa;
-      opacity: 0.95;
-    }
-
-    /* Doctor Container */
     .container-section {
       margin-top: -80px;
       background: #fff;
@@ -78,67 +68,40 @@
     .doctor-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 25px rgba(0,136,169,0.18);
+      border-left-color: var(--dark);
     }
 
-    .doctor-header {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .doctor-avatar {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: #e0f6fb;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      color: var(--main);
-    }
+    .doctor-header { display: flex; align-items: center; gap: 20px; }
+    .doctor-avatar { width: 70px; height: 70px; border-radius: 50%; background: #e0f6fb;
+      display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--main); }
 
     .btn-appointment {
-      background: var(--main);
-      color: #fff;
-      border-radius: 25px;
-      border: none;
-      padding: 8px 20px;
-      transition: 0.3s;
+      background: var(--main); color: #fff; border-radius: 25px; border: none; padding: 8px 20px; transition: 0.3s;
     }
 
-    .btn-appointment:hover {
-      background: var(--dark);
-      transform: scale(1.05);
-    }
+    .btn-appointment:hover { background: var(--dark); transform: scale(1.05); }
 
-    footer {
-      background: var(--dark);
-      color: #fff;
-      text-align: center;
-      padding: 18px 0;
-      margin-top: 50px;
-    }
+    footer { background: var(--dark); color: #fff; text-align: center; padding: 18px 0; margin-top: 50px; }
 
-    /* Slot Styles */
     #slotContainer .slot-btn {
-      background: #f0fafd;
-      border: 1px solid #0088a9;
-      border-radius: 10px;
-      padding: 10px;
-      color: #004b63;
-      transition: 0.3s;
-      text-align: center;
-      cursor: pointer;
+      background: #f0fafd; border: 1px solid #0088a9; border-radius: 10px; padding: 10px;
+      color: #004b63; transition: 0.3s; text-align: center; cursor: pointer;
       flex: 1 1 calc(50% - 10px);
     }
 
-    #slotContainer .slot-btn:hover,
-    .slot-btn.selected {
-      background: #0088a9;
-      color: white;
-      font-weight: 600;
+    #slotContainer .slot-btn:hover, .slot-btn.selected {
+      background: #0088a9; color: white; font-weight: 600;
     }
+
+    .flatpickr-calendar { z-index: 999999 !important; }
+
+    .flatpickr-day.unavailable-day {
+      background: #ffd6d6 !important;
+      color: #a30000 !important;
+      text-decoration: line-through;
+    }
+
+    .flatpickr-input[readonly] { background-color: white !important; cursor: pointer; }
   </style>
 </head>
 
@@ -164,16 +127,15 @@
     <div id="doctorList">
       <?php
       $sql = "SELECT d.*, 
-              GROUP_CONCAT(CONCAT(ds.day_of_week, ' ',
-              TIME_FORMAT(ds.start_time, '%h:%i %p'), ' - ',
-              TIME_FORMAT(ds.end_time, '%h:%i %p'))
-              ORDER BY FIELD(ds.day_of_week,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')
-              SEPARATOR ',') AS full_schedule
+              GROUP_CONCAT(CONCAT(ds.day_of_week, ' ', 
+              TIME_FORMAT(ds.start_time, '%h:%i %p'), ' - ', 
+              TIME_FORMAT(ds.end_time, '%h:%i %p')) 
+              ORDER BY FIELD(ds.day_of_week,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday') SEPARATOR ',') AS full_schedule
               FROM doctors d
               LEFT JOIN doctor_slots ds ON d.doctor_id = ds.doctor_id
               GROUP BY d.doctor_id ORDER BY d.name";
-
       $result = $conn->query($sql);
+
       if ($result->num_rows > 0) {
         while ($r = $result->fetch_assoc()) {
           $clinic = $r['clinic_address'] ?? 'No clinic address';
@@ -194,15 +156,12 @@
             foreach ($schedules as $s) echo "<li>$s</li>";
           echo "</ul>
             <div class='text-end mt-3'>
-              <button class='btn btn-appointment'
-                      onclick=\"openBookingModal('{$r['doctor_id']}', '{$r['name']}', '{$r['specialization']}')\">
+              <button class='btn btn-appointment' onclick=\"openBookingModal('{$r['doctor_id']}', '{$r['name']}', '{$r['specialization']}')\">
                 <i class='bi bi-calendar-check'></i> Book Appointment
               </button>
             </div>
           </div>";
         }
-      } else {
-        echo "<p class='text-center text-muted'>No doctors found.</p>";
       }
       ?>
     </div>
@@ -216,18 +175,17 @@
           <h5 class="modal-title"><i class="bi bi-calendar-plus"></i> Book Appointment</h5>
           <button class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body position-relative">
           <form id="appointmentForm">
             <input type="hidden" id="doctor_id">
             <div class="mb-3"><label>Doctor</label><input type="text" id="doctor_name" class="form-control" readonly></div>
             <div class="mb-3"><label>Specialization</label><input type="text" id="specialization" class="form-control" readonly></div>
             <div class="mb-3"><label>Mobile Number</label><input type="text" id="mobile_number" class="form-control" required></div>
 
-            <div class="mb-3">
-              <label>Date</label>
+            <div class="mb-3"><label>Date</label>
               <div class="input-group">
                 <span class="input-group-text" id="calendarIcon"><i class="bi bi-calendar-event"></i></span>
-                <input type="text" id="appointment_date" class="form-control" placeholder="Select date" required readonly>
+                <input type="text" id="appointment_date" class="form-control" placeholder="Select date" readonly required>
               </div>
             </div>
 
@@ -240,8 +198,13 @@
             </div>
 
             <div class="mb-3">
-              <label>Reason</label>
-              <textarea id="reason" class="form-control" rows="3" required></textarea>
+              <label>Reason for Appointment</label><br>
+              <div class="form-check"><input class="form-check-input reason-check" type="checkbox" value="Follow-up Checkup" id="r1"><label class="form-check-label" for="r1">Follow-up Checkup</label></div>
+              <div class="form-check"><input class="form-check-input reason-check" type="checkbox" value="Consultation" id="r2"><label class="form-check-label" for="r2">Consultation</label></div>
+              <div class="form-check"><input class="form-check-input reason-check" type="checkbox" value="Medical Certificate Request" id="r3"><label class="form-check-label" for="r3">Medical Certificate Request</label></div>
+              <div class="form-check"><input class="form-check-input reason-check" type="checkbox" value="Lab Result Review" id="r4"><label class="form-check-label" for="r4">Lab Result Review</label></div>
+              <div class="form-check"><input class="form-check-input reason-check" type="checkbox" value="Other" id="r5"><label class="form-check-label" for="r5">Other</label></div>
+              <input type="hidden" id="reason" required>
             </div>
 
             <div class="text-end">
@@ -260,21 +223,7 @@
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
   <script>
-let allSlots = [], unavailable = [], enabledDays = [], calendar;
-
-// ✅ FIXED: initialize Flatpickr only after modal fully opens
-document.getElementById("bookingModal").addEventListener("shown.bs.modal", function() {
-  if (calendar) { calendar.destroy(); } // reset flatpickr each open
-  calendar = flatpickr("#appointment_date", {
-    altInput: true,
-    altFormat: "F j, Y",
-    dateFormat: "Y-m-d",
-    minDate: "today",
-    disableMobile: true
-  });
-
-  document.getElementById("calendarIcon").addEventListener("click", () => calendar.open());
-});
+let allSlots = [], unavailable = [], calendar;
 
 function searchDoctor() {
   const input = document.getElementById("searchDoctor").value.toLowerCase();
@@ -287,38 +236,73 @@ function openBookingModal(id, name, spec) {
   document.getElementById("doctor_id").value = id;
   document.getElementById("doctor_name").value = name;
   document.getElementById("specialization").value = spec;
+
   const slotContainer = document.getElementById("slotContainer");
-  slotContainer.innerHTML = "<div class='text-muted small'>Loading...</div>";
+  slotContainer.innerHTML = "<div class='text-muted small'>Loading slots...</div>";
+
+  const modal = new bootstrap.Modal(document.getElementById("bookingModal"));
+  modal.show();
 
   fetch(`../../controller/fetch_slots.php?doctor_id=${id}`)
     .then(res => res.json())
     .then(data => {
-      allSlots = data.slots;
-      unavailable = data.unavailable_dates;
+      allSlots = data.slots || [];
+      unavailable = (data.unavailable_dates || []).map(d => d.trim());
 
       const workingDays = [...new Set(allSlots.map(s => s.day_of_week))];
       const dayMap = { Sunday:0, Monday:1, Tuesday:2, Wednesday:3, Thursday:4, Friday:5, Saturday:6 };
       const enabledDays = workingDays.map(d => dayMap[d]);
 
-      if (calendar) {
-        calendar.set({
-          enable: [date => enabledDays.includes(date.getDay()) && !unavailable.includes(date.toISOString().split('T')[0])]
-        });
-      }
+      if (calendar && typeof calendar.destroy === "function") calendar.destroy();
+
+      calendar = flatpickr("#appointment_date", {
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        disableMobile: true,
+        appendTo: document.body,
+        disable: [
+          function(date) {
+            const allowed = enabledDays.includes(date.getDay());
+            const isUnavailable = unavailable.includes(flatpickr.formatDate(date, "Y-m-d"));
+            return !allowed || isUnavailable;
+          }
+        ],
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+          const dateStr = fp.formatDate(dayElem.dateObj, "Y-m-d");
+          if (unavailable.includes(dateStr)) {
+            dayElem.classList.add("unavailable-day");
+            dayElem.title = "Doctor unavailable on this date";
+          }
+        },
+        onOpen: () => {
+          // 🔧 Fix overlay so slots stay clickable
+          const cal = document.querySelector(".flatpickr-calendar");
+          if (cal) cal.style.pointerEvents = "auto";
+          cal.style.zIndex = "9999999";
+        },
+        onChange: showAvailableSlots
+      });
+
+      document.getElementById("calendarIcon").onclick = () => calendar.open();
+      document.getElementById("appointment_date").onclick = () => calendar.open();
 
       slotContainer.innerHTML = "<div class='text-muted small'>Select a date to view available slots.</div>";
+    })
+    .catch(() => {
+      slotContainer.innerHTML = "<div class='text-danger small'>Failed to load slots.</div>";
     });
-
-  new bootstrap.Modal(document.getElementById("bookingModal")).show();
 }
 
-document.getElementById("appointment_date").addEventListener("change", function() {
-  const date = new Date(this.value);
-  const selectedDay = date.toLocaleDateString('en-US', { weekday: 'long' });
+function showAvailableSlots(selectedDates) {
+  if (!selectedDates.length) return;
+  const selected = selectedDates[0];
+  const selectedDay = selected.toLocaleDateString('en-US', { weekday: 'long' });
   const slotContainer = document.getElementById("slotContainer");
   slotContainer.innerHTML = "";
-  const filtered = allSlots.filter(s => s.day_of_week === selectedDay && s.remaining_slots > 0);
 
+  const filtered = allSlots.filter(s => s.day_of_week === selectedDay && s.remaining_slots > 0);
   if (!filtered.length) {
     slotContainer.innerHTML = "<div class='text-muted small'>No slots for this day.</div>";
     return;
@@ -328,12 +312,20 @@ document.getElementById("appointment_date").addEventListener("change", function(
     const btn = document.createElement("div");
     btn.className = "slot-btn";
     btn.textContent = `${slot.start_time} - ${slot.end_time} (${slot.remaining_slots} slots)`;
-    btn.onclick = () => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
       document.querySelectorAll(".slot-btn").forEach(b => b.classList.remove("selected"));
       btn.classList.add("selected");
       document.getElementById("appointment_time").value = `${slot.start_time}-${slot.end_time}`;
-    };
+    });
     slotContainer.appendChild(btn);
+  });
+}
+
+document.querySelectorAll('.reason-check').forEach(chk => {
+  chk.addEventListener('change', () => {
+    const selected = Array.from(document.querySelectorAll('.reason-check:checked')).map(c => c.value);
+    document.getElementById('reason').value = selected.join(', ');
   });
 });
   </script>
